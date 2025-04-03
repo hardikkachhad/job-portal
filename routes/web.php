@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
+
 
 
 /*
@@ -20,4 +22,18 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::get('/',[FrontController::class, 'home'])->name('home');
+
+
+Route::group(['middleware' => 'Userauth'], function () {
+    Route::get('/', [FrontController::class, 'home'])->name('home');
+    Route::get('/register', [RegisterController::class, 'register'])->name('account.register');
+    Route::post('/processregistation', [RegisterController::class, 'processregistation'])->name('processregistation');
+    Route::get('/login', [RegisterController::class, 'login'])->name('login');
+    Route::post('/authenticate', [RegisterController::class, 'authetication'])->name('authetication');
+});
+
+Route::group(['middleware' => 'User'], function () {
+    Route::get('/profile', [RegisterController::class, 'profile'])->name('account.profile');
+    Route::get('/logout', [RegisterController::class, 'logout'])->name('account.logout');
+
+});
